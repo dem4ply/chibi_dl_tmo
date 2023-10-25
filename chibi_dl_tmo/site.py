@@ -20,8 +20,10 @@ logger = logging.getLogger( "chibi_dl.sites.tmo_fans" )
 
 
 class TMO_fans( Site ):
-    def __init__( self, *args, user=None, password=None, **kw ):
-        super().__init__( 'https://tmofans.com/login', *args, **kw )
+    def __init__( self, *args, url=None, user=None, password=None, **kw ):
+        if url is None:
+            url = 'https://tmofans.com/login'
+        super().__init__( url, *args, **kw )
         self.series = []
         self.user = user
         self.password = password
@@ -29,9 +31,9 @@ class TMO_fans( Site ):
 
     def append( self, url ):
         from .serie import Serie
-        self.cross_cloud_flare()
+        #self.cross_cloud_flare()
         if re_show.match( url ):
-            self.series.append( Serie( url, parent=self ) )
+            self.series.append( Serie( url=url, parent=self ) )
         elif re_follow.match( url ):
             self.login()
             for l in self.get_all_follow():
@@ -47,6 +49,16 @@ class TMO_fans( Site ):
         else:
             logger.error(
                 "la url {} no se pudo identificar como serie".format( url ) )
+
+    def cross_cloud_flare( self, delay=2 ):
+        super().cross_cloud_flare( delay=delay )
+        self.browser.close()
+
+    @property
+    def soup( self ):
+        if not self.cloud_flare_passed:
+            self.cross_cloud_flare()
+        return super().soup
 
     def login( self ):
         if self._login_ok:

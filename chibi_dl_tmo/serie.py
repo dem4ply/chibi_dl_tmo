@@ -1,24 +1,28 @@
+import copy
 import itertools
 import logging
 import time
 
 from bs4 import BeautifulSoup
 from chibi.file.temp import Chibi_temp_path
+from chibi.atlas import Chibi_atlas
 
 from .episode import Episode
-from chibi_dl.site.base.site import Site
+from chibi_dl_tmo.site import TMO_fans as Site
 
 
 logger = logging.getLogger( "chibi_dl.sites.tmo_fans.serie" )
 
 
 class Serie( Site ):
-    def __init__( self, url, *args, **kw ):
-        super().__init__( url, *args, **kw )
-
     def download( self, path ):
         serie_path = ( path + self.name ).made_safe()
         serie_path.mkdir()
+
+        meta = serie_path + "metadata.yml"
+        meta.open().write( self.metadata )
+        basura, ext = self.cover_url.base_name.rsplit( '.', 1 )
+        self.cover_url.download( serie_path + f'cover.{ext}' )
 
         logger.info( "iniciando descarga de la serie '{}' de {}".format(
             self.name, self.url ) )
@@ -36,47 +40,74 @@ class Serie( Site ):
                 logger.exception(
                     "paso un problema cuando intento de "
                     "descargar el episodio" )
+                print( e )
+                import pdb
+                pdb.post_mortem( e.__traceback__ )
+                import pdb
+                pdb.set_trace()
                 continue
             episode.compress( serie_path, downlaod_folder )
             logger.info(
-                'termino de descargar el episodio esperando '
-                '10 seguncods para el siguiente' )
+                'termino de descargar el capitulo esperando '
+                '10 segundos' )
             time.sleep( 10 )
+        logger.info(
+            'termino de descargar los episodios esperando '
+            '5 segundos' )
+        time.sleep( 5 )
 
     @property
     def name( self ):
-        try:
-            return self._title
-        except AttributeError:
-            self.load_soup()
-            return self._title
+        return self.info.title
 
     @property
     def episodes( self ):
-        try:
-            return self._episodes
-        except AttributeError:
-            self.load_soup()
-            return self._episodes
+        return self.info.episodes
 
-    def load_soup( self ):
-        page = self.get( self.url, )
-        soup = BeautifulSoup( page.content, 'html.parser' )
+    @property
+    def cover_url( self ):
+        img = self.soup.select( "section" )[1].select_one( "img" )
+        return self.build_url( img.get( 'src' ) )
+
+    def parse_metadata( self ):
+        meta = copy.copy( self.info )
+        meta.url = str( self.url )
+        meta.pop( 'episodes' )
+        return meta
+
+    def parse_info( self ):
+        result = Chibi_atlas()
         try:
-            self._title = "".join(
-                soup.select( ".element-title.my-2" )[0].find_all(
+            result.title = "".join(
+                self.soup.select( ".element-title.my-2" )[0].find_all(
                     text=True, recursive=False ) ).strip()
-            self.load_episodes( soup )
+            result.episodes = self.load_episodes( self.soup )
+            data = self.soup.select( "section" )[1]
+            result.tags = list( c.text.lower() for c in data.select( "h6" ) )
+            result.other_titles = list(
+                c.text.lower() for c in data.select( "span.badge" ) )
+            result.synopsis = data.select_one( 'p.element-description' ).text
+
+            staff = self.soup.select( "div.card-body" )
+            result.staff = []
+            for s in staff:
+                rol = s.p.text
+                name = s.h5.text
+                name = name.replace( ',', '' ).strip()
+                result.staff.append( dict( rol=rol, name=name ) )
         except Exception as e:
+            print( e )
             import pdb
             pdb.post_mortem( e.__traceback__ )
+            import pdb
+            pdb.set_trace()
             raise
+        return result
 
     def load_episodes( self, soup ):
-        self._episodes = []
+        episodes = []
         if "one_shot" in self.url:
-            self.load_one_shot( soup )
-            return
+            return self.load_one_shot( soup )
         else:
             chapter_container = soup.find(
                 "div", { 'class': "card chapters" } )
@@ -101,18 +132,21 @@ class Serie( Site ):
                     "span", { "class": "fas fa-play fa-2x"}
                 ).parent.get( 'href' )
 
-                self._episodes.append(
+                episodes.append(
                     Episode.from_site(
                         site=self, url=url, fansub=fansub, title=title ) )
+        return episodes
 
     def load_one_shot( self, soup ):
+        episodes = []
         chapters = soup.find( "div", { "class": "card chapter-list-element" } )
         chapters = chapters.ul.find_all( "li", recursive=False )
         for i, chapter in enumerate( chapters ):
             parts = chapter.div.find_all( "div", recursive=False )
             url = parts[-1].a.get( "href" ).strip()
 
-            self._episodes.append(
+            episodes.append(
                 Episode.from_site(
                     site=self, url=url, fansub=parts[0].text.strip(),
                     title=str( i ) ) )
+        return episodes

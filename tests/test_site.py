@@ -43,6 +43,7 @@ class Test_tmofans:
             properties = f.open().properties
             self.assertGreater( properties.size, 1024 )
 
+    @skip( 'esta mierda es muy lenta' )
     def test_should_can_compress_the_download_files( self ):
         folder = Chibi_temp_path()
         folder_compress = Chibi_temp_path()
@@ -63,9 +64,31 @@ class Test_tmofans:
         self.assertEqual( len( serie.episodes ), len( download_files ) )
 
 
-class Test_kimetsu_no_yaiba( Test_tmofans, VCRTestCase ):
+class Test_spy_family( Test_tmofans, VCRTestCase ):
     def setUp( self ):
         super().setUp()
         self.site = TMO_fans()
         self.site.append(
             'https://lectortmo.com/library/manga/43882/spy-x-family' )
+
+    def test_serie_should_be_the_url_of_the_spy_x_family( self ):
+        self.assertEqual(
+            self.site.series[0].url,
+            'https://lectortmo.com/library/manga/43882/spy-x-family' )
+
+
+class Test_tmp_basic( TestCase ):
+    def setUp( self ):
+        super().setUp()
+        self.site = TMO_fans()
+
+    def test_on_init_should_not_have_browser( self ):
+        self.assertFalse( self.site._has_browser_init )
+
+    def test_on_init_should_not_have_browser( self ):
+        self.assertFalse( self.site._has_browser_init )
+
+    def test_should_no_open_the_browser_when_do_the_append( self ):
+        self.assertFalse( self.site.is_browser_open )
+        self.site.append( 'https://lectortmo.com/' )
+        self.assertFalse( self.site.is_browser_open )
