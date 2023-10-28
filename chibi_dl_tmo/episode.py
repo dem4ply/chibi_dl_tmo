@@ -86,14 +86,14 @@ class Episode( Site ):
                 self.url = self.url + 'cascade'
                 self.load()
         first_link = self.soup.select_one( 'a' ).get( 'href' )
-        if first_link != 'https://lectortmo.com':
+        if first_link != 'https://visortmo.com':
             import pdb
             pdb.set_trace()
             logger.info(
                 f'load_soup el primer link no tiene '
                 f'la pagina de tmo {first_link}' )
             parts = Chibi_url( self._response._response.url ).path.rsplit( '/', 2 )[-2:]
-            url = Chibi_url( 'https://lectortmo.com/viewer' ) + parts[0]
+            url = Chibi_url( 'https://visortmo.com/viewer' ) + parts[0]
             url = url + 'cascade'
             logger.info( f"contrullendo la url {url}" )
             self.load_soup_cascade( url )
@@ -117,13 +117,13 @@ class Episode( Site ):
         soup = BeautifulSoup( cascade.content, 'html.parser' )
 
         first_link = soup.select_one( 'a' ).get( 'href' )
-        if first_link != 'https://lectortmo.com':
+        if first_link != 'https://visortmo.com':
             logger.info(
                 f'load_soup_cascade el primer link no tiene '
                 f'la pagina de tmo {first_link}' )
             parts = Chibi_url(
                 cascade._response.url ).path.rsplit( '/', 2 )[-2:]
-            url = Chibi_url( 'https://lectortmo.com/viewer' ) + parts[0]
+            url = Chibi_url( 'https://visortmo.com/viewer' ) + parts[0]
             url = url + 'cascade'
             logger.info( f"contrullendo la url {url}" )
             self.load_soup_cascade( url  )
