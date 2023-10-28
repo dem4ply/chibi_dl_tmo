@@ -8,7 +8,7 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = [ 'chibi-dl>=0.0.4' ]
+requirements = [ 'chibi-dl>=0.1.2', 'undetected-chromedriver>=3.5.2' ]
 
 setup(
     author="dem4ply",
