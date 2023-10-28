@@ -52,23 +52,26 @@ how to used
 
 .. code-block:: text
 
-	usage: chibi_dl [-h] [--user USER] [--password PASSWORD]
-						[--resoulution QUALITY]
-						site [site ...] download_path
-
+	usage: chibi_dl_tmo [-h] [--only_print] [--only_metadata] [--only_links] [--user USER] [--password PASSWORD] [--log_level LOG_LEVEL] [-o DOWNLOAD_PATH]
+                    [-config_site CONFIG_SITE]
+                    site [site ...]
 	descarga mangas
-
 	positional arguments:
-	site                  urls de las series que se quieren descargar
-	download_path         lugar de descarga
-
-	optional arguments:
-	-h, --help            show this help message and exit
-	--user USER, -u USER  usuario del sitio
-	--password PASSWORD, -p PASSWORD
-									contrasenna del sitio
-	--resoulution QUALITY, -q QUALITY
-									resolucion a descargar
+	  site                  urls de las series que se quieren descargar
+	options:
+	  -h, --help            show this help message and exit
+	  --only_print          define si silo va a imprimir la lista de links o episodios
+	  --only_metadata       se define si solo se queire recolectar los datos y no descargar
+	  --only_links          si se usa solo imprimira las urls
+	  --user USER, -u USER  usuario del sitio
+	  --password PASSWORD, -p PASSWORD
+	                        contrasenna del sitio
+	  --log_level LOG_LEVEL
+	                        nivel de log
+	  -o DOWNLOAD_PATH, --output DOWNLOAD_PATH
+	                        ruta donde se guardara el video o manga
+	  -config_site CONFIG_SITE
+	                        python, yaml o json archivo con el usuario y password de cada sitio
 
 .. code-block:: bash
 
