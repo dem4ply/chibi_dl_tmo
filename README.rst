@@ -40,6 +40,7 @@ install
 .. code-block:: bash
 
 	pip install chibi_dl_tmo
+	pip install -e git+https://github.com/jdholtz/undetected-chromedriver.git@29551bd27954dacaf09864cf77935524db642c1b#egg=undetected_chromedriver
 
 is going to add the command chibi_dl_tmo
 
