@@ -41,10 +41,10 @@ class Serie( Site ):
                     "paso un problema cuando intento de "
                     "descargar el episodio" )
                 print( e )
-                import pdb
-                pdb.post_mortem( e.__traceback__ )
-                import pdb
-                pdb.set_trace()
+                #import pdb
+                #pdb.post_mortem( e.__traceback__ )
+                #import pdb
+                #pdb.set_trace()
                 continue
             episode.compress( serie_path, downlaod_folder )
             logger.info(

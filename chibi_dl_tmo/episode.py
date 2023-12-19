@@ -82,7 +82,7 @@ class Episode( Site ):
             if match:
                 episode_id = match.groups()[0]
                 self.url = (
-                    Chibi_url( 'https://lectortmo.com/viewer' ) + episode_id )
+                    Chibi_url( 'https://visortmo.com/viewer' ) + episode_id )
                 self.url = self.url + 'cascade'
                 self.load()
         first_link = self.soup.select_one( 'a' ).get( 'href' )
