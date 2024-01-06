@@ -15,7 +15,7 @@ logger = logging.getLogger( "chibi_dl.sites.tmo_fans.serie" )
 
 
 class Serie( Site ):
-    def download( self, path ):
+    def download( self, path, amount=None ):
         serie_path = ( path + self.name ).made_safe()
         serie_path.mkdir()
 
@@ -26,7 +26,11 @@ class Serie( Site ):
 
         logger.info( "iniciando descarga de la serie '{}' de {}".format(
             self.name, self.url ) )
-        for episode in self.episodes:
+        if amount:
+            episodes = itertools.islice( self.episodes, amount )
+        else:
+            episodes = self.episodes
+        for episode in episodes:
             episode_path = serie_path + episode.file_name
             if ( episode_path.exists ):
                 logger.info( (
@@ -46,7 +50,8 @@ class Serie( Site ):
                 #import pdb
                 #pdb.set_trace()
                 continue
-            episode.compress( serie_path, downlaod_folder )
+            path_episode = episode.compress( serie_path, downlaod_folder )
+            logger.info( f"episodio descargado '{path_episode}'" )
             logger.info(
                 'termino de descargar el capitulo esperando '
                 '10 segundos' )
