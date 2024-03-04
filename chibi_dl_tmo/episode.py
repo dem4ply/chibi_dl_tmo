@@ -85,8 +85,8 @@ class Episode( Site ):
                     Chibi_url( 'https://visortmo.com/viewer' ) + episode_id )
                 self.url = self.url + 'cascade'
                 self.load()
-        first_link = self.soup.select_one( 'a' ).get( 'href' )
-        if first_link != 'https://visortmo.com':
+        first_link = self.soup.select_one( 'a' )
+        if first_link and first_link.get( 'href' ) != 'https://visortmo.com':
             import pdb
             pdb.set_trace()
             logger.info(
@@ -100,8 +100,17 @@ class Episode( Site ):
             return
 
         if 'cascade' not in self._response._response.url:
-            cascade_url = self.soup.select_one(
-                'a.nav-link[title="Cascada"]' ).get( 'href' )
+            try:
+                cascade_url = self.soup.select_one(
+                    'a.nav-link[title="Cascada"]' ).get( 'href' )
+            except:
+                lines = self.soup.script.text.split('\n')
+                lines = list( filter( bool, lines ) )
+                dict_pk = lines[0].split( '=' )[1]
+                pk = dict_pk.split( ',' )[0].split( ':' )[1]
+                pk = pk.replace( "'", "" ).strip()
+                cascade_url = (
+                    Chibi_url( 'https://visortmo.com/viewer' ) + pk ) + 'cascade'
         else:
             cascade_url = self._response._response.url
         self.load_soup_cascade( cascade_url )
