@@ -63,6 +63,11 @@ parser.add_argument(
     help="python, yaml o json archivo con el usuario y password de cada sitio"
 )
 
+parser.add_argument(
+    "--amount", type=int, dest="amount", default=None,
+    help="cantidad de episodios que descargara"
+)
+
 
 def main():
     """Console script for chibi_dl_tmo."""
@@ -82,7 +87,7 @@ def main():
                 print( serie.url )
     else:
         for serie in tmo_fans.series:
-            serie.download( args.download_path )
+            serie.download( args.download_path, amount=args.amount )
     return 0
 
 
