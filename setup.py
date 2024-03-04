@@ -35,6 +35,6 @@ setup(
     name='chibi_dl_tmo',
     packages=find_packages(include=['chibi_dl_tmo', 'chibi_dl_tmo.*']),
     url='https://github.com/dem4ply/chibi_dl_tmo',
-    version='0.1.0',
+    version='0.1.1',
     zip_safe=False,
 )
