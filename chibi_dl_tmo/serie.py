@@ -96,7 +96,7 @@ class Serie( Site ):
             staff = self.soup.select( "div.card-body" )
             result.staff = []
             for s in staff:
-                rol = s.p.text
+                rol = s.b.text
                 name = s.h5.text
                 name = name.replace( ',', '' ).strip()
                 result.staff.append( dict( rol=rol, name=name ) )
