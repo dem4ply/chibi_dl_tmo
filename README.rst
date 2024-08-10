@@ -93,5 +93,5 @@ can add a config file to set the default download folder
 	echo <<EOF
 	from chibi.config import configuration
 	configuration.chibi_dl_tmo.download_path = '~/path/mangas'
-	EOF << ~/.config/chibi/chibi_dl_tmo.py
+	EOF > ~/.config/chibi/chibi_dl_tmo.py
 	chibi_dl @links_of_mangas
