@@ -21,7 +21,7 @@ setup(
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
     ],
-    description="command script for download mangas from lectortmo.com",
+    description="command script for download mangas from lectortmo.com or visortmo.com",
     entry_points={
         'console_scripts': [
             'chibi_dl_tmo=chibi_dl_tmo.cli:main',

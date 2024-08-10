@@ -85,3 +85,13 @@ and donwload all the series
 
 	chibi_dl --only_print --only_links -p $PASSWORD -u $USER https://tmofans.com/profile/read https://tmofans.com/profile/pending  https://tmofans.com/profile/follow > links_of_mangas
 	chibi_dl -o /path/to/save/series @links_of_mangas
+
+can add a config file to set the default download folder
+
+.. code-block:: bash
+
+	echo <<EOF
+	from chibi.config import configuration
+	configuration.chibi_dl_tmo.download_path = '~/path/mangas'
+	EOF << ~/.config/chibi/chibi_dl_tmo.py
+	chibi_dl @links_of_mangas

@@ -64,6 +64,7 @@ class Test_tmofans:
         self.assertEqual( len( serie.episodes ), len( download_files ) )
 
 
+@skip( "quitaron el link" )
 class Test_spy_family( Test_tmofans, VCRTestCase ):
     def setUp( self ):
         super().setUp()
@@ -77,13 +78,23 @@ class Test_spy_family( Test_tmofans, VCRTestCase ):
             'https://lectortmo.com/library/manga/43882/spy-x-family' )
 
 
+class Test_king_from_hell( Test_tmofans, VCRTestCase ):
+    def setUp( self ):
+        super().setUp()
+        self.site = TMO_fans()
+        self.site.append(
+            'https://visortmo.com/library/manga/79656/king-from-hell' )
+
+    def test_serie_should_be_the_url_of_the_spy_x_family( self ):
+        self.assertEqual(
+            self.site.series[0].url,
+            'https://visortmo.com/library/manga/79656/king-from-hell' )
+
+
 class Test_tmp_basic( TestCase ):
     def setUp( self ):
         super().setUp()
         self.site = TMO_fans()
-
-    def test_on_init_should_not_have_browser( self ):
-        self.assertFalse( self.site._has_browser_init )
 
     def test_on_init_should_not_have_browser( self ):
         self.assertFalse( self.site._has_browser_init )

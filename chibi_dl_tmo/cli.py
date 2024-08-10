@@ -11,10 +11,11 @@ import urllib3
 
 from chibi.file import Chibi_path
 from chibi.config import basic_config, load as load_config
+from chibi.config import default_file_load, configuration
 
 from chibi_dl_tmo import TMO_fans
 
-
+default_file_load( 'chibi_dl_tmo.py', touch=True )
 logger_formarter = '%(levelname)s %(name)s %(asctime)s %(message)s'
 
 
@@ -54,9 +55,16 @@ parser.add_argument(
     help="nivel de log",
 )
 
-parser.add_argument(
-    "-o", "--output", type=Chibi_path, dest="download_path",
-    help="ruta donde se guardara el video o manga" )
+default_download_path=configuration.chibi_dl_tmo.get( 'download_path' )
+if default_download_path:
+    parser.add_argument(
+        "-o", "--output", type=Chibi_path, dest="download_path",
+        default=default_download_path,
+        help="ruta donde se guardara el video o manga" )
+else:
+    parser.add_argument(
+        "-o", "--output", type=Chibi_path, dest="download_path", required=True,
+        help="ruta donde se guardara el video o manga" )
 
 parser.add_argument(
     "-config_site", type=Chibi_path, dest="config_site",
@@ -74,6 +82,7 @@ def main():
     # tmo falla de vez en cuando con el https o siempre
     urllib3.disable_warnings( urllib3.exceptions.InsecureRequestWarning )
     args = parser.parse_args()
+    args.download_path
     basic_config( args.log_level )
 
     tmo_fans = TMO_fans( user=args.user, password=args.password, )
