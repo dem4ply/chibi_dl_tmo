@@ -82,18 +82,18 @@ class Episode( Site ):
             if match:
                 episode_id = match.groups()[0]
                 self.url = (
-                    Chibi_url( 'https://visortmo.com/viewer' ) + episode_id )
+                    Chibi_url( 'https://zonatmo.com/viewer' ) + episode_id )
                 self.url = self.url + 'cascade'
                 self.load()
         first_link = self.soup.select_one( 'a' )
-        if first_link and first_link.get( 'href' ) != 'https://visortmo.com':
+        if first_link and first_link.get( 'href' ) != 'https://zonatmo.com':
             import pdb
             pdb.set_trace()
             logger.info(
                 f'load_soup el primer link no tiene '
                 f'la pagina de tmo {first_link}' )
             parts = Chibi_url( self._response._response.url ).path.rsplit( '/', 2 )[-2:]
-            url = Chibi_url( 'https://visortmo.com/viewer' ) + parts[0]
+            url = Chibi_url( 'https://zonatmo.com/viewer' ) + parts[0]
             url = url + 'cascade'
             logger.info( f"contrullendo la url {url}" )
             self.load_soup_cascade( url )
@@ -110,7 +110,7 @@ class Episode( Site ):
                 pk = dict_pk.split( ',' )[0].split( ':' )[1]
                 pk = pk.replace( "'", "" ).strip()
                 cascade_url = (
-                    Chibi_url( 'https://visortmo.com/viewer' ) + pk ) + 'cascade'
+                    Chibi_url( 'https://zonatmo.com/viewer' ) + pk ) + 'cascade'
         else:
             cascade_url = self._response._response.url
         self.load_soup_cascade( cascade_url )
@@ -126,13 +126,13 @@ class Episode( Site ):
         soup = BeautifulSoup( cascade.content, 'html.parser' )
 
         first_link = soup.select_one( 'a' ).get( 'href' )
-        if first_link != 'https://visortmo.com':
+        if first_link != 'https://zonatmo.com':
             logger.info(
                 f'load_soup_cascade el primer link no tiene '
                 f'la pagina de tmo {first_link}' )
             parts = Chibi_url(
                 cascade._response.url ).path.rsplit( '/', 2 )[-2:]
-            url = Chibi_url( 'https://visortmo.com/viewer' ) + parts[0]
+            url = Chibi_url( 'https://zonatmo.com/viewer' ) + parts[0]
             url = url + 'cascade'
             logger.info( f"contrullendo la url {url}" )
             self.load_soup_cascade( url  )
